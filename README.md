@@ -6,3 +6,7 @@ Sorting algorithms visualization, in C with raylib.
 ```bash
 make
 ```
+
+# TODO
+- Implement more sorting algorithms
+- More user interface
