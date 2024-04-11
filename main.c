@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <assert.h>
 #include <pthread.h>
-#include <unistd.h>
 #include <raylib.h>
 
 #include "list.h"
 #include "sort.h"
+#include "gui.h"
 
 #define WINDOW_WIDTH 1000
 #define WINDOW_HEIGHT 600
@@ -16,41 +17,61 @@ int main(void)
 {
     SetRandomSeed(time(NULL));
 
-    List list = list_alloc(200);
+    List list = list_alloc(30);
     assert(list.arr != NULL);
 
     State state = state_init(list);
-    list_fill_random(list, 1, 3000);
+    list_fill_random(list, 1, 100);
+
+    bool thread_working = false;
     pthread_t thread_id;
-    pthread_create(&thread_id, NULL, thread_sort_bubble, &state);
+
+    Rectangle button_pos;
 
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     SetTraceLogLevel(LOG_WARNING);
     InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE);
     SetTargetFPS(60);
 
+    Font font = LoadFont("Roboto.ttf");
+    SetTextureFilter(font.texture, TEXTURE_FILTER_BILINEAR);
+
     while (!WindowShouldClose()) {
-        if (IsKeyPressed(KEY_R) && state.exit == true) {
-            list_fill_random(list, 1, 100);
-        }
-        if (IsKeyPressed(KEY_A)) {
-            state.exit = true;
-        }
-        if (IsKeyPressed(KEY_ENTER) && state.exit == true) {
-            state = state_init(list);
-            pthread_create(&thread_id, NULL, thread_sort_bubble, &state);
-        }
+        int screen_width = GetScreenWidth();
+        int screen_height = GetScreenHeight();
+
+        button_pos.x = screen_width / 100;
+        button_pos.y = screen_height / 100;
+        button_pos.width = screen_width / 10;
+        button_pos.height = screen_height / 12;
 
         BeginDrawing();
-            ClearBackground(GetColor(0x181818FF));
-            DrawText("[R]: Generate new list\n\n[ENTER]: Start sorting\n\n[A]: Abort sorting", 10, 10, 30, WHITE);
+            ClearBackground(GetColor(0x202020FF));
+
+            if (gui_button(button_pos, DARKGREEN, font, 1.5f, "Start") && state.exit == true) {
+                state = state_init(list);
+                state.exit = false;
+                pthread_create(&thread_id, NULL, thread_sort_bubble, &state);
+                thread_working = true;
+            }
+            button_pos.x += button_pos.width + 5;
+            if (gui_button(button_pos, MAROON, font, 1.5f, "Stop")) {
+                state.exit = true;
+                thread_working = false;
+            }
+            button_pos.x += button_pos.width + 5;
+            if (gui_button(button_pos, GRAY, font, 1.5f, "Randomize") && state.exit == true) {
+                list_fill_random(list, 1, 100);
+            }
+
             draw_state(state);
         EndDrawing();
     }
 
     CloseWindow();
     state.exit = true;
-    pthread_join(thread_id, NULL);
+    if (thread_working)
+        pthread_join(thread_id, NULL);
     list_free(list);
 
     return 0;

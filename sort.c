@@ -12,7 +12,7 @@ State state_init(List list)
     state.i = -1;
     state.j = -1;
     state.sorted = false;
-    state.exit = false;
+    state.exit = true;
     return state;
 }
 
@@ -83,6 +83,7 @@ void sort_insertion(State *state)
     *i = -1;
     *j = -1;
     state->sorted = true;
+    state->exit = true;
 }
 
 void *thread_sort_insertion(void *state)
@@ -100,11 +101,12 @@ void sort_bubble(State *state)
     int *j = &state->j;
 
     bool swapped = false;
+    int n = list->length;
 
     do {
         swapped = false;
 
-        for (*i = 1; *i < list->length; ++*i) {
+        for (*i = 1; *i < n; ++*i) {
             if (state->exit) {
                 *i = -1;
                 *j = -1;
@@ -119,11 +121,13 @@ void sort_bubble(State *state)
 
             usleep(SLEEP);
         }
+        --n;
     } while (swapped == true);
 
     *i = -1;
     *j = -1;
     state->sorted = true;
+    state->exit = true;
 }
 
 void *thread_sort_bubble(void *state)

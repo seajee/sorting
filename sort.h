@@ -6,7 +6,7 @@
 #include <stdbool.h>
 
 #define PADDING 1
-#define SLEEP 1000 * 5 // microseconds
+#define SLEEP 1000 * 50 // microseconds
 
 typedef struct
 {
