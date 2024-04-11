@@ -10,6 +10,7 @@ typedef struct
 } List;
 
 List list_alloc(size_t length);
+void list_realloc(List list, size_t length);
 void list_free(List list);
 int list_max(List list);
 void list_fill_random(List list, int min, int max);

@@ -17,11 +17,17 @@
 #define KEY_STOP KEY_BACKSPACE
 #define KEY_RANDOMIZE KEY_R
 
-int main(void)
+#define DEFAULT_LIST_LENGTH 50
+
+int main(int argc, char **argv)
 {
+    int length = DEFAULT_LIST_LENGTH;
+    if (argc > 1)
+        length = atoi(argv[1]);
+
     SetRandomSeed(time(NULL));
 
-    List list = list_alloc(30);
+    List list = list_alloc(length);
     assert(list.arr != NULL);
 
     State state = state_init(list);
@@ -30,7 +36,10 @@ int main(void)
     bool thread_working = false;
     pthread_t thread_id;
 
-    Rectangle button_pos;
+    Rectangle button;
+
+    float sleep = 100000.0f;
+    Rectangle slider;
 
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     SetTraceLogLevel(LOG_WARNING);
@@ -44,30 +53,42 @@ int main(void)
         int screen_width = GetScreenWidth();
         int screen_height = GetScreenHeight();
 
-        button_pos.x = screen_width / 100;
-        button_pos.y = screen_height / 100;
-        button_pos.width = screen_width / 10;
-        button_pos.height = screen_height / 12;
+        button.x = screen_width / 100;
+        button.y = screen_height / 100;
+        button.width = screen_width / 10;
+        button.height = screen_height / 12;
+
+        slider.x = screen_width / 2;
+        slider.y = screen_height / 50;
+        slider.width = screen_width / 5;
+        slider.height = screen_height / 32;
+
+        state.sleep = sleep;
 
         BeginDrawing();
             ClearBackground(GetColor(0x202020FF));
 
-            if ((gui_button(button_pos, DARKGREEN, font, 1.5f, "Start") || IsKeyPressed(KEY_START))
+            if ((gui_button(button, DARKGREEN, font, 1.5f, "Start") || IsKeyPressed(KEY_START))
                     && state.exit == true) {
                 state = state_init(list);
+                state.sleep = sleep;
                 state.exit = false;
                 pthread_create(&thread_id, NULL, thread_sort_bubble, &state);
                 thread_working = true;
             }
-            button_pos.x += button_pos.width + 5;
-            if (gui_button(button_pos, MAROON, font, 1.5f, "Stop") || IsKeyPressed(KEY_STOP)) {
+            button.x += button.width + 5;
+            if (gui_button(button, MAROON, font, 1.5f, "Stop") || IsKeyPressed(KEY_STOP)) {
                 state.exit = true;
                 thread_working = false;
             }
-            button_pos.x += button_pos.width + 5;
-            if ((gui_button(button_pos, GRAY, font, 1.5f, "Randomize") || IsKeyPressed(KEY_RANDOMIZE))
+            button.x += button.width + 5;
+            if ((gui_button(button, GRAY, font, 1.5f, "Randomize") || IsKeyPressed(KEY_RANDOMIZE))
                     && state.exit == true) {
                 list_fill_random(list, 1, 100);
+            }
+
+            if (gui_slider(slider, MAROON, 1.0f, 100000.0f, &sleep)) {
+                state.sleep = sleep;
             }
 
             draw_state(state);

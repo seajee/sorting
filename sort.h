@@ -4,9 +4,9 @@
 #include "list.h"
 
 #include <stdbool.h>
+#include <unistd.h>
 
 #define PADDING 1
-#define SLEEP 1000 * 50 // microseconds
 
 typedef struct
 {
@@ -15,6 +15,7 @@ typedef struct
     int j;
     bool sorted;
     bool exit;
+    useconds_t sleep;
 } State;
 
 State state_init(List list);

@@ -12,6 +12,14 @@ List list_alloc(size_t length)
     return list;
 }
 
+void list_realloc(List list, size_t length)
+{
+    if (list.arr == NULL)
+        return;
+
+    list.arr = (int*)realloc(list.arr, length);
+}
+
 void list_free(List list)
 {
     free(list.arr);

@@ -1,6 +1,5 @@
 #include "sort.h"
 
-#include <unistd.h>
 #include <assert.h>
 #include <raylib.h>
 #include <raymath.h>
@@ -76,7 +75,8 @@ void sort_insertion(State *state)
             } else {
                 break;
             }
-            usleep(SLEEP);
+
+            usleep(state->sleep);
         }
     }
 
@@ -119,7 +119,7 @@ void sort_bubble(State *state)
                 swapped = true;
             }
 
-            usleep(SLEEP);
+            usleep(state->sleep);
         }
         --n;
     } while (swapped == true);
