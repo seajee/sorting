@@ -31,4 +31,7 @@ void *thread_sort_insertion(void *state);
 void sort_bubble(State *state);
 void *thread_sort_bubble(void *state);
 
+void sort_selection(State *state);
+void *thread_sort_selection(void *state);
+
 #endif // _SORT_H_

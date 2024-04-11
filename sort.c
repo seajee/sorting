@@ -135,3 +135,44 @@ void *thread_sort_bubble(void *state)
     sort_bubble((State*)state);
     return NULL;
 }
+
+void sort_selection(State *state)
+{
+    assert(state->list.arr != NULL);
+
+    List *list = &state->list;
+    int *i = &state->i;
+    int *j = &state->j;
+
+    for (*i = 0; *i < list->length - 1; ++*i) {
+        int min = *i;
+
+        for (*j = *i + 1; *j < list->length; ++*j) {
+            if (state->exit) {
+                *i = -1;
+                *j = -1;
+                return;
+            }
+
+            if (list->arr[*j] < list->arr[min]) {
+                min = *j;
+            }
+
+            usleep(state->sleep);
+        }
+
+        if (*i != min)
+            swap(&list->arr[*i], &list->arr[min]);
+    }
+
+    *i = -1;
+    *j = -1;
+    state->sorted = true;
+    state->exit = true;
+}
+
+void *thread_sort_selection(void *state)
+{
+    sort_selection((State*)state);
+    return NULL;
+}
