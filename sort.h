@@ -8,6 +8,8 @@
 
 #define PADDING 1
 
+typedef void *(*sort_func_t)(void*);
+
 typedef struct
 {
     List list;

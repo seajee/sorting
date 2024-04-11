@@ -17,6 +17,9 @@
 #define KEY_STOP KEY_BACKSPACE
 #define KEY_RANDOMIZE KEY_R
 
+#define COLOR_SELECTED GOLD
+#define COLOR_EXCLUDED DARKGRAY
+
 #define DEFAULT_LIST_LENGTH 50
 
 int main(int argc, char **argv)
@@ -33,8 +36,12 @@ int main(int argc, char **argv)
     State state = state_init(list);
     list_fill_random(list, 1, 100);
 
+    sort_func_t sort_func = thread_sort_insertion;
+
     bool thread_working = false;
     pthread_t thread_id;
+
+    Color color = COLOR_SELECTED;
 
     Rectangle button;
 
@@ -73,7 +80,7 @@ int main(int argc, char **argv)
                 state = state_init(list);
                 state.sleep = sleep;
                 state.exit = false;
-                pthread_create(&thread_id, NULL, thread_sort_bubble, &state);
+                pthread_create(&thread_id, NULL, sort_func, &state);
                 thread_working = true;
             }
             button.x += button.width + 5;
@@ -86,6 +93,22 @@ int main(int argc, char **argv)
                     && state.exit == true) {
                 list_fill_random(list, 1, 100);
             }
+
+            button.x -= (button.width + 5) * 2;
+            button.y += button.height + 5;
+            if (sort_func == thread_sort_insertion) color = COLOR_SELECTED;
+            if ((gui_button(button, color, font, 1.5f, "Insertion Sort"))
+                    && state.exit == true) {
+                sort_func = thread_sort_insertion;
+            }
+            color = COLOR_EXCLUDED;
+            button.x += button.width + 5;
+            if (sort_func == thread_sort_bubble) color = COLOR_SELECTED;
+            if ((gui_button(button, color, font, 1.5f, "Bubble Sort"))
+                    && state.exit == true) {
+                sort_func = thread_sort_bubble;
+            }
+            color = COLOR_EXCLUDED;
 
             if (gui_slider(slider, MAROON, 1.0f, 100000.0f, &sleep)) {
                 state.sleep = sleep;
