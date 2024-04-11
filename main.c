@@ -13,6 +13,10 @@
 #define WINDOW_HEIGHT 600
 #define WINDOW_TITLE "Sorting"
 
+#define KEY_START KEY_ENTER
+#define KEY_STOP KEY_BACKSPACE
+#define KEY_RANDOMIZE KEY_R
+
 int main(void)
 {
     SetRandomSeed(time(NULL));
@@ -48,19 +52,21 @@ int main(void)
         BeginDrawing();
             ClearBackground(GetColor(0x202020FF));
 
-            if (gui_button(button_pos, DARKGREEN, font, 1.5f, "Start") && state.exit == true) {
+            if ((gui_button(button_pos, DARKGREEN, font, 1.5f, "Start") || IsKeyPressed(KEY_START))
+                    && state.exit == true) {
                 state = state_init(list);
                 state.exit = false;
                 pthread_create(&thread_id, NULL, thread_sort_bubble, &state);
                 thread_working = true;
             }
             button_pos.x += button_pos.width + 5;
-            if (gui_button(button_pos, MAROON, font, 1.5f, "Stop")) {
+            if (gui_button(button_pos, MAROON, font, 1.5f, "Stop") || IsKeyPressed(KEY_STOP)) {
                 state.exit = true;
                 thread_working = false;
             }
             button_pos.x += button_pos.width + 5;
-            if (gui_button(button_pos, GRAY, font, 1.5f, "Randomize") && state.exit == true) {
+            if ((gui_button(button_pos, GRAY, font, 1.5f, "Randomize") || IsKeyPressed(KEY_RANDOMIZE))
+                    && state.exit == true) {
                 list_fill_random(list, 1, 100);
             }
 
