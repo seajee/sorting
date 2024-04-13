@@ -107,7 +107,7 @@ int main(int argc, char **argv)
             color = COLOR_EXCLUDED;
             button.x += button.width + 5;
             if (sort_func == thread_sort_insertion_binary) color = COLOR_SELECTED;
-            if ((gui_button(button, color, font, 1.5f, "Binary\nInsertion Sort"))
+            if ((gui_button(button, color, font, 1.5f, "      Binary\nInsertion Sort"))
                     && state.exit == true) {
                 sort_func = thread_sort_insertion_binary;
             }
