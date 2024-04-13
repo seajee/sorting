@@ -17,3 +17,6 @@ build/%.o: %.c
 clean:
 	@rm -rf sorting build/
 	@echo "clean"
+
+windows:
+	$(CC) $(CFLAGS) $(SRC) -o sorting -static `pkg-config --libs raylib` -lgdi32 -lwinmm
