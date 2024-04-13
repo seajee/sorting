@@ -22,6 +22,15 @@
 
 #define DEFAULT_LIST_LENGTH 50
 
+void selector(Rectangle button,
+        State state, sort_func_t func, sort_func_t *selected,
+        Font font, const char *label)
+{
+    Color color = (func == *selected) ? COLOR_SELECTED : COLOR_EXCLUDED;
+    if (gui_button(button, color, font, 1.5f, label) && state.exit == true)
+        *selected = func;
+}
+
 int main(int argc, char **argv)
 {
     int length = DEFAULT_LIST_LENGTH;
@@ -40,8 +49,6 @@ int main(int argc, char **argv)
 
     bool thread_working = false;
     pthread_t thread_id;
-
-    Color color = COLOR_SELECTED;
 
     Rectangle button;
 
@@ -97,44 +104,19 @@ int main(int argc, char **argv)
 
             button.x -= (button.width + 5) * 2;
             button.y += button.height + 5;
-            color = COLOR_EXCLUDED;
-            if (sort_func == thread_sort_insertion) color = COLOR_SELECTED;
-            if ((gui_button(button, color, font, 1.5f, "Insertion Sort"))
-                    && state.exit == true) {
-                sort_func = thread_sort_insertion;
-            }
+            selector(button, state, thread_sort_insertion, &sort_func, font, "Insertion Sort");
 
-            color = COLOR_EXCLUDED;
             button.x += button.width + 5;
-            if (sort_func == thread_sort_insertion_binary) color = COLOR_SELECTED;
-            if ((gui_button(button, color, font, 1.5f, "      Binary\nInsertion Sort"))
-                    && state.exit == true) {
-                sort_func = thread_sort_insertion_binary;
-            }
+            selector(button, state, thread_sort_insertion_binary, &sort_func, font, "      Binary\nInsertion Sort");
 
-            color = COLOR_EXCLUDED;
             button.x += button.width + 5;
-            if (sort_func == thread_sort_bubble) color = COLOR_SELECTED;
-            if ((gui_button(button, color, font, 1.5f, "Bubble Sort"))
-                    && state.exit == true) {
-                sort_func = thread_sort_bubble;
-            }
+            selector(button, state, thread_sort_bubble, &sort_func, font, "Bubble Sort");
 
-            color = COLOR_EXCLUDED;
             button.x += button.width + 5;
-            if (sort_func == thread_sort_selection) color = COLOR_SELECTED;
-            if ((gui_button(button, color, font, 1.5f, "Selection Sort"))
-                    && state.exit == true) {
-                sort_func = thread_sort_selection;
-            }
+            selector(button, state, thread_sort_selection, &sort_func, font, "Selection Sort");
 
-            color = COLOR_EXCLUDED;
             button.x += button.width + 5;
-            if (sort_func == thread_sort_quick) color = COLOR_SELECTED;
-            if ((gui_button(button, color, font, 1.5f, "Quick Sort"))
-                    && state.exit == true) {
-                sort_func = thread_sort_quick;
-            }
+            selector(button, state, thread_sort_quick, &sort_func, font, "Quick Sort");
 
             if (gui_slider(slider, MAROON, 0.0001f, 100000.0f, &sleep)) {
                 state.sleep = sleep;
