@@ -92,10 +92,12 @@ int main(int argc, char **argv)
             if ((gui_button(button, GRAY, font, 1.5f, "Randomize") || IsKeyPressed(KEY_RANDOMIZE))
                     && state.exit == true) {
                 list_fill_random(list, 1, 100);
+                state.sorted = false;
             }
 
             button.x -= (button.width + 5) * 2;
             button.y += button.height + 5;
+            color = COLOR_EXCLUDED;
             if (sort_func == thread_sort_insertion) color = COLOR_SELECTED;
             if ((gui_button(button, color, font, 1.5f, "Insertion Sort"))
                     && state.exit == true) {
@@ -116,12 +118,21 @@ int main(int argc, char **argv)
                 sort_func = thread_sort_selection;
             }
             color = COLOR_EXCLUDED;
+            button.x += button.width + 5;
+            if (sort_func == thread_sort_quick) color = COLOR_SELECTED;
+            if ((gui_button(button, color, font, 1.5f, "Quick Sort"))
+                    && state.exit == true) {
+                sort_func = thread_sort_quick;
+            }
 
             if (gui_slider(slider, MAROON, 1.0f, 100000.0f, &sleep)) {
                 state.sleep = sleep;
             }
 
-            draw_state(state);
+            if (state.sorted)
+                draw_sorted_animation(&state);
+            else
+                draw_state(state);
         EndDrawing();
     }
 

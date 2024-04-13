@@ -10,6 +10,8 @@ State state_init(List list)
     state.list = list;
     state.i = -1;
     state.j = -1;
+    state.k = -1;
+    state.s = -1;
     state.sorted = false;
     state.exit = true;
     return state;
@@ -42,9 +44,44 @@ void draw_state(State state)
             color = BLUE;
         if (i == state.j)
             color = RED;
+        if (i == state.k)
+            color = YELLOW;
 
         DrawRectangleV(pos, size, color);
     }
+}
+
+void draw_sorted_animation(State *state)
+{
+    List *list = &state->list;
+    assert(list->arr != NULL);
+    assert(list->length != 0);
+
+    int sw = GetScreenWidth();
+    int sh = GetScreenHeight();
+    float rw = (float)sw / list->length;
+    int max = list_max(*list);
+    float max_height = sh / 2;
+
+    Vector2 pos = Vector2Zero();
+    Vector2 size = Vector2Zero();
+    Color color = WHITE;
+
+    for (int i = 0; i < list->length; ++i) {
+        size.x = rw - PADDING;
+        size.y = list->arr[i] * max_height / max;
+        pos.x = rw * i + PADDING;
+        pos.y = sh - size.y;
+
+        color = WHITE;
+        if (state->s >= i) {
+            color = GREEN;
+        }
+
+        DrawRectangleV(pos, size, color);
+    }
+
+    ++state->s;
 }
 
 void swap(int *a, int *b)
@@ -174,5 +211,63 @@ void sort_selection(State *state)
 void *thread_sort_selection(void *state)
 {
     sort_selection((State*)state);
+    return NULL;
+}
+
+void sort_quick(State *state)
+{
+    assert(state->list.arr != NULL);
+    sort_quick_recursive(state, 0, state->list.length - 1);
+
+    if (!state->exit)
+        state->sorted = true;
+    state->i = -1;
+    state->j = -1;
+    state->k = -1;
+    state->exit = true;
+}
+
+void sort_quick_recursive(State *state, int left, int right)
+{
+    if (left >= right) {
+        return;
+    }
+
+    List *list = &state->list;
+    int *sx = &state->i;
+    int *dx = &state->j;
+    int *pivot = &state->k;
+
+    *sx = left;
+    *dx = right - 1;
+    *pivot = right;
+
+    while (*sx <= *dx) {
+        if (state->exit) {
+            return;
+        }
+
+        if (list->arr[*sx] <= list->arr[*pivot]) {
+            ++*sx;
+        } else {
+            swap(&list->arr[*sx], &list->arr[*dx]);
+            --*dx;
+        }
+
+        if (*dx < right - 1) {
+            swap(&list->arr[*dx + 1], &list->arr[*pivot]);
+            *pivot = *dx + 1;
+        }
+
+        usleep(state->sleep);
+    }
+
+    sort_quick_recursive(state, left, *pivot - 1);
+    sort_quick_recursive(state, *pivot + 1, right);
+}
+
+void *thread_sort_quick(void *state)
+{
+    sort_quick((State*)state);
     return NULL;
 }

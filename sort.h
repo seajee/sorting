@@ -15,6 +15,8 @@ typedef struct
     List list;
     int i;
     int j;
+    int k;
+    int s;
     bool sorted;
     bool exit;
     useconds_t sleep;
@@ -22,6 +24,7 @@ typedef struct
 
 State state_init(List list);
 void draw_state(State state);
+void draw_sorted_animation(State *state);
 
 void swap(int *a, int *b);
 
@@ -33,5 +36,9 @@ void *thread_sort_bubble(void *state);
 
 void sort_selection(State *state);
 void *thread_sort_selection(void *state);
+
+void sort_quick(State *state);
+void sort_quick_recursive(State *state, int left, int right);
+void *thread_sort_quick(void *state);
 
 #endif // _SORT_H_
