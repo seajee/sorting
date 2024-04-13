@@ -1,6 +1,7 @@
 #include "sort.h"
 
 #include <assert.h>
+#include <limits.h>
 #include <raylib.h>
 #include <raymath.h>
 
@@ -91,6 +92,29 @@ void swap(int *a, int *b)
     *b = tmp;
 }
 
+int insertion_binary_search(State state, int x, int left, int right, int *mid)
+{
+    int *a = state.list.arr;
+
+    while (left <= right) {
+        if (state.exit)
+            return INT_MAX;
+
+        *mid = left + (right - left) / 2;
+
+        if (x == a[*mid])
+            return *mid + 1;
+        else if (x > a[*mid])
+            left = *mid + 1;
+        else
+            right = *mid - 1;
+
+        usleep(state.sleep);
+    }
+
+    return left;
+}
+
 void sort_insertion(State *state)
 {
     assert(state->list.arr != NULL);
@@ -126,6 +150,53 @@ void sort_insertion(State *state)
 void *thread_sort_insertion(void *state)
 {
     sort_insertion((State*)state);
+    return NULL;
+}
+
+void sort_insertion_binary(State *state)
+{
+    assert(state->list.arr != NULL);
+
+    List *list = &state->list;
+    int *i = &state->i;
+    int *j = &state->j;
+    int *k = &state->k;
+    int pos;
+    int n;
+
+    for (*i = 1; *i < list->length; ++*i) {
+        *j = *i - 1;
+        n = list->arr[*i];
+        pos = insertion_binary_search(*state, n, 0, *j, k);
+
+        while (*j >= pos) {
+            if (state->exit) {
+                *i = -1;
+                *j = -1;
+                *k = -1;
+                state->exit = true;
+                return;
+            }
+
+            list->arr[*j + 1] = list->arr[*j];
+            --*j;
+
+        }
+        list->arr[*j + 1] = n;
+
+        usleep(state->sleep);
+    }
+
+    *i = -1;
+    *j = -1;
+    *k = -1;
+    state->sorted = true;
+    state->exit = true;
+}
+
+void *thread_sort_insertion_binary(void *state)
+{
+    sort_insertion_binary((State*)state);
     return NULL;
 }
 

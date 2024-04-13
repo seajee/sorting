@@ -103,6 +103,15 @@ int main(int argc, char **argv)
                     && state.exit == true) {
                 sort_func = thread_sort_insertion;
             }
+
+            color = COLOR_EXCLUDED;
+            button.x += button.width + 5;
+            if (sort_func == thread_sort_insertion_binary) color = COLOR_SELECTED;
+            if ((gui_button(button, color, font, 1.5f, "Binary\nInsertion Sort"))
+                    && state.exit == true) {
+                sort_func = thread_sort_insertion_binary;
+            }
+
             color = COLOR_EXCLUDED;
             button.x += button.width + 5;
             if (sort_func == thread_sort_bubble) color = COLOR_SELECTED;
@@ -110,6 +119,7 @@ int main(int argc, char **argv)
                     && state.exit == true) {
                 sort_func = thread_sort_bubble;
             }
+
             color = COLOR_EXCLUDED;
             button.x += button.width + 5;
             if (sort_func == thread_sort_selection) color = COLOR_SELECTED;
@@ -117,6 +127,7 @@ int main(int argc, char **argv)
                     && state.exit == true) {
                 sort_func = thread_sort_selection;
             }
+
             color = COLOR_EXCLUDED;
             button.x += button.width + 5;
             if (sort_func == thread_sort_quick) color = COLOR_SELECTED;
@@ -125,7 +136,7 @@ int main(int argc, char **argv)
                 sort_func = thread_sort_quick;
             }
 
-            if (gui_slider(slider, MAROON, 1.0f, 100000.0f, &sleep)) {
+            if (gui_slider(slider, MAROON, 0.0001f, 100000.0f, &sleep)) {
                 state.sleep = sleep;
             }
 

@@ -27,9 +27,13 @@ void draw_state(State state);
 void draw_sorted_animation(State *state);
 
 void swap(int *a, int *b);
+int insertion_binary_search(State state, int x, int left, int right, int *mid);
 
 void sort_insertion(State *state);
 void *thread_sort_insertion(void *state);
+
+void sort_insertion_binary(State *state);
+void *thread_sort_insertion_binary(void *state);
 
 void sort_bubble(State *state);
 void *thread_sort_bubble(void *state);
