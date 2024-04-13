@@ -1,6 +1,6 @@
 # Sorting
 
-![demo.mov](assets/demo.mov)
+https://github.com/seajee/sorting/assets/140245488/e88923aa-d030-4027-90fb-781b2ae76ed1
 
 Sorting algorithms visualization, in C with raylib.
 
