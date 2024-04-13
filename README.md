@@ -1,6 +1,6 @@
 # Sorting
 
-![demo.mp4](assets/demo.mp4)
+![demo.mov](assets/demo.mov)
 
 Sorting algorithms visualization, in C with raylib.
 
