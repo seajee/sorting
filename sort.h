@@ -45,4 +45,7 @@ void sort_quick(State *state);
 void sort_quick_recursive(State *state, int left, int right);
 void *thread_sort_quick(void *state);
 
+void sort_bogo(State *state);
+void *thread_sort_bogo(void *state);
+
 #endif // _SORT_H_

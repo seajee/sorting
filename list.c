@@ -42,3 +42,13 @@ void list_fill_random(List list, int min, int max)
         list.arr[i] = GetRandomValue(min, max);
     }
 }
+
+bool list_is_sorted(List list)
+{
+    for (int i = 1; i < list.length; ++i) {
+        if (list.arr[i] < list.arr[i - 1])
+            return false;
+    }
+
+    return true;
+}

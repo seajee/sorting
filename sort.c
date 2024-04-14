@@ -342,3 +342,35 @@ void *thread_sort_quick(void *state)
     sort_quick((State*)state);
     return NULL;
 }
+
+void sort_bogo(State *state)
+{
+    assert(state->list.arr != NULL);
+    List *list = &state->list;
+    int *i = &state->i;
+
+    while (!list_is_sorted(*list)) {
+
+        for (*i = 0; *i < list->length; ++*i) {
+            if (state->exit) {
+                *i = -1;
+                return;
+            }
+
+            int random = GetRandomValue(0, list->length - 1);
+            swap(&list->arr[*i], &list->arr[random]);
+        }
+
+        usleep(state->sleep);
+    }
+
+    *i = -1;
+    state->sorted = true;
+    state->exit = true;
+}
+
+void *thread_sort_bogo(void *state)
+{
+    sort_bogo((State*)state);
+    return NULL;
+}

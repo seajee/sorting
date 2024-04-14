@@ -118,6 +118,9 @@ int main(int argc, char **argv)
             button.x += button.width + 5;
             selector(button, state, thread_sort_quick, &sort_func, font, "Quick Sort");
 
+            button.x += button.width + 5;
+            selector(button, state, thread_sort_bogo, &sort_func, font, "Bogo Sort");
+
             if (gui_slider(slider, MAROON, 0.0001f, 100000.0f, &sleep)) {
                 state.sleep = sleep;
             }
