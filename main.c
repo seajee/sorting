@@ -67,15 +67,15 @@ int main(int argc, char **argv)
         int screen_width = GetScreenWidth();
         int screen_height = GetScreenHeight();
 
-        button.x = screen_width / 100;
-        button.y = screen_height / 100;
-        button.width = screen_width / 10;
-        button.height = screen_height / 12;
+        button.x = screen_width / 100.0;
+        button.y = screen_height / 100.0;
+        button.width = screen_width / 10.0;
+        button.height = screen_height / 12.0;
 
-        slider.x = screen_width / 2;
-        slider.y = screen_height / 50;
-        slider.width = screen_width / 5;
-        slider.height = screen_height / 32;
+        slider.x = screen_width / 2.0;
+        slider.y = screen_height / 50.0;
+        slider.width = screen_width / 5.0;
+        slider.height = screen_height / 32.0;
 
         state.sleep = sleep;
 
